@@ -26,7 +26,7 @@ player_jump = -27
 
 wpm_factor = 50
 avg_wpm = 80
-passage_char_limit = 200
+passage_char_limit = 250
 
 PLATFORM_LIST = [(SCREEN_WIDTH // 3, SCREEN_HEIGHT - 220, SCREEN_WIDTH // 3, 40),
                  (SCREEN_WIDTH // 4, SCREEN_HEIGHT - 220 * 2, SCREEN_WIDTH // 3, 30)]
@@ -48,7 +48,8 @@ paddingx = 50
 paddingy = 50
 
 text_rect = (paddingx,SCREEN_HEIGHT*2//3,SCREEN_WIDTH-2*paddingx,SCREEN_HEIGHT//3-paddingy) #x,y,width,height
-calibration_text = 'This text is to calibrate your typing speed.'
+calibration_text = 'This text is to calibrate your typing speed. It took the brand two years to develop the perfect $4 Popeyes sandwich.'
+#calibration_text = '.'
 
 typing_dict={
     K_q:'q',K_w:'w',K_e:'e',K_r:'r',K_t:'t',K_y:'y',K_u:'u',K_i:'i',K_o:'o',K_p:'p',
