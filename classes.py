@@ -195,6 +195,89 @@ class Bot(pg.sprite.Sprite):
 
         self.pos += self.vel + self.acc
 
+class Jackster(pg.sprite.Sprite):
+    def __init__(self,x,y,width,height,game,color=WHITE):
+        self.groups = game.all_sprites
+        self._layer = BOT_LAYER
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.color=color
+        self.last_update = 0
+        self.current_frame = 0
+        self.walking = False
+        self.game = game
+        self.wpm = random.randint(round(self.game.calibrated_wpm)-30, round(self.game.calibrated_wpm) + 2)
+
+        # self.image = get_image(pg.image.load("data/images/idle.png"), self.width, self.height)
+        # self.rect = self.image.get_rect()
+
+        self.image = pg.Surface((self.width, self.height))
+        self.image.fill(self.color)
+
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+
+        self.pos = vec(self.x, self.y)
+        self.vel = vec(0, 0)
+        self.acc = vec(0, 0)
+
+        #graphics
+        self.walkLeft = [pg.image.load('data/images/kiwil1.png'), pg.image.load('data/images/kiwil2.png'),
+                          pg.image.load('data/images/kiwil3.png'), pg.image.load('data/images/kiwil4.png'),
+                          pg.image.load('data/images/kiwil5.png')]
+        for i in self.walkLeft:
+            i.set_colorkey(BLACK)
+
+        self.walkRight = []
+        for frame in self.walkLeft:
+            frame.set_colorkey(BLACK)
+            self.walkRight.append(pg.transform.flip(frame, True, False))
+
+    def animate(self):
+        # now = pg.time.get_ticks()
+        # if self.vel.x != 0:
+        #     self.walking = True
+        # else:
+        #     self.walking = False
+        #
+        # if self.walking:
+        #     if self.game.wpm != 0:
+        #         animated_frames = 4000 / self.wpm
+        #     else:
+        #         animated_frames = 60
+        #     if now - self.last_update > animated_frames:
+        #         self.last_update = now
+        #         self.current_frame = (self.current_frame + 1) % len(self.walkRight)
+        #         bottom = self.rect.bottom
+        #         self.image = self.walkRight[self.current_frame]
+        #         self.rect = self.image.get_rect()
+        #         self.rect.bottom = bottom
+        #
+        # else:
+        #     self.image = self.walkRight[0]
+        #     self.rect = self.image.get_rect()
+        #
+        # self.mask = pg.mask.from_surface(self.image)
+        pass
+
+    def update(self):
+        self.animate()
+        self.rect.midbottom = self.pos
+
+        #motion to wpm
+        if self.game.typing_text.start:
+            self.acc.x = self.wpm / wpm_factor
+            self.acc.x += self.vel.x * player_friction
+            self.vel.x += self.acc.x
+
+        #self.vel.x = self.wpm / 100
+
+        self.pos += self.vel + self.acc
+
 class Platform(pg.sprite.Sprite):
     def __init__(self, x, y, width, height, type, game):
         self.groups = game.all_sprites, game.platforms

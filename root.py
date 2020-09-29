@@ -125,7 +125,7 @@ class Game(object):
 
             y_datum = self.player.y - self.player.height
 
-            for i in range(6):
+            for i in range(NUM_BOTS):
                 Bot(self.player.x, y_datum-i*45, 64, 40, self, color = GRAY)
 
             # self.bot1 = Bot(self.player.x, y_datum, 64, 40, self, color=GRAY)
@@ -136,6 +136,9 @@ class Game(object):
             for platform in self.platforms:
                 platform.kill()
 
+            jackster_chance = random.randint(1,100)
+            if jackster_chance<20:
+                Jackster(self.player.x, y_datum-(NUM_BOTS+1)*45, 64, 40, self, color = GREEN)
 
             self.new_round = False
 

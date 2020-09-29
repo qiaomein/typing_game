@@ -17,6 +17,8 @@ PLATFORM_LAYER = 0
 PLAYER_LAYER = 1
 BOT_LAYER = 1
 
+NUM_BOTS = 4
+
 winning_score = 40
 
 player_acc = 2 #d wpm/dt
@@ -49,7 +51,7 @@ paddingy = 50
 
 text_rect = (paddingx,SCREEN_HEIGHT*2//3,SCREEN_WIDTH-2*paddingx,SCREEN_HEIGHT//3-paddingy) #x,y,width,height
 calibration_text = 'This text is to calibrate your typing speed. It took the brand two years to develop the perfect $4 Popeyes sandwich.'
-#calibration_text = '.'
+calibration_text = 'Meesi.'
 
 typing_dict={
     K_q:'q',K_w:'w',K_e:'e',K_r:'r',K_t:'t',K_y:'y',K_u:'u',K_i:'i',K_o:'o',K_p:'p',
