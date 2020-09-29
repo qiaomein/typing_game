@@ -375,7 +375,8 @@ class TypingText(object):
 
     def wrong_letter(self): #penalize for multiple wrong keys even if stuck
         print('Wrong letter')
-        self.streak = 0
+        if self.streak>0: self.streak /= 2
+        else: self.streak = 0
         self.wrong_letter_flag = True
 
     def reset_game(self):
