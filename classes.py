@@ -309,10 +309,12 @@ class TypingText(object):
         self.game=game
         self.start = False
         self.streak = 0
+        self.stats = []
         self.load_passage()
 
         self.feed_in=''
         self.passage_clone=self.passage[:]
+
 
         self.ghost_passage = ''
         self.passage_letter=self.passage[0]
@@ -375,16 +377,21 @@ class TypingText(object):
 
     def wrong_letter(self): #penalize for multiple wrong keys even if stuck
         print('Wrong letter')
-        if self.streak>0: self.streak /= 2
+        if self.streak>0: self.streak = self.streak // 2
         else: self.streak = 0
         self.wrong_letter_flag = True
 
     def reset_game(self):
         self.end_of_passage = True
 
+
         if self.game.calibrated and not self.game.new_round and not self.game.input_box.active:
             print(f'{self.game.calibrated_wpm},{self.game.wpm}')
-            self.game.calibrated_wpm = (self.game.wpm + self.game.calibrated_wpm) /2
+            self.game.calibrated_wpm = (self.game.wpm + self.game.calibrated_wpm) / 2
+
+
+        #get all stats for record keeping before next round
+        self.get_stats()
 
 
         self.start = False
@@ -393,7 +400,20 @@ class TypingText(object):
         self.streak = 0
         self.game.total_char_typed = 0
         self.game.player.vel.x = 0
-        self.game.player.pos = vec(text_rect[0]+32,text_rect[1])
+
+        # self.game.player.pos = vec(text_rect[0]+32,text_rect[1])
+
+
+    def get_stats(self): #get all stats for record keeping before next round (player pos, bots pos, time, wpm, accuracy, max streak?)
+
+        self.stats = [[self.game.player.pos.x,self.game.wpm,self.game.accuracy,self.game.timer]]
+        for bot in self.game.bots:
+            self.stats.append([bot.pos.x,'time',bot.wpm])
+        print(self.stats)
+
+
+
+
 
 
 class InputBox:
@@ -516,3 +536,4 @@ class Query(object):
                 if self.a[i] == ' ':
                     break
             self.a = self.a[:i]
+

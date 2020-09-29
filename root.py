@@ -128,10 +128,12 @@ class Game(object):
             for i in range(NUM_BOTS):
                 Bot(self.player.x, y_datum-i*45, 64, 40, self, color = GRAY)
 
+            self.player.pos = vec(text_rect[0] + 32, text_rect[1])
+
             # self.bot1 = Bot(self.player.x, y_datum, 64, 40, self, color=GRAY)
             # self.bot2 = Bot(self.player.x, y_datum-40, 64, 40, self)
             # self.bot3 = Bot(self.player.x, )
-            self.typing_text.reset_game()
+            # self.typing_text.reset_game()
 
             for platform in self.platforms:
                 platform.kill()
@@ -214,9 +216,29 @@ class Game(object):
     def show_start_screen(self):
         pass #show online status
 
+    def wait_for_key(self):
+        waiting = True
+        while waiting:
+            self.clock.tick(FPS)
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    waiting = False
+                    self.running = False
+                if event.type == pg.KEYDOWN and self.running:
+                    waiting = False
+
     def show_go_screen(self):
         if not self.running:
             return
+
+        #display results of round
+        self.screen.fill(GREEN)
+
+        self.wait_for_key()
+
+
+
+
 
 g = Game()
 g.show_start_screen()

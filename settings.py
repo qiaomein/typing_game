@@ -22,7 +22,7 @@ NUM_BOTS = 4
 winning_score = 40
 
 player_acc = 2 #d wpm/dt
-player_friction = -0.7
+player_friction = -0.8
 player_grav = 1.0
 player_jump = -27
 
