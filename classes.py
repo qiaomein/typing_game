@@ -332,6 +332,7 @@ class TypingText(object):
     def draw(self):
 
         #draw_text(self.game.screen, passage, self.size, self.x, self.y, self.color)
+        pg.draw.rect(self.game.screen, WHITE, (paddingx - 2, SCREEN_HEIGHT * 2 // 3, SCREEN_WIDTH - 2 * paddingx + 10, SCREEN_HEIGHT // 3 - paddingy))
         drawText(self.game.screen,self.passage_clone,BLACK,text_rect,font_name,aa = True,size = 25)
         #drawText(self.game.screen, self.ghost_passage, GHOSTED_TEXT, text_rect, font_name, aa=True, size=25)
 
@@ -406,10 +407,14 @@ class TypingText(object):
 
     def get_stats(self): #get all stats for record keeping before next round (player pos, bots pos, time, wpm, accuracy, max streak?)
 
-        self.stats = [[self.game.player.pos.x,self.game.wpm,self.game.accuracy,self.game.timer]]
+        self.stats = [[self.game.player.pos.x,self.game.wpm,self.game.timer,self.game.accuracy]]
+        length = len(self.game.typing_text.passage)
+
         for bot in self.game.bots:
-            self.stats.append([bot.pos.x,'time',bot.wpm])
+            bot_timer = 12*length/bot.wpm
+            self.stats.append([bot.pos.x,bot.wpm,bot_timer,100])
         print(self.stats)
+        self.game.scoreboard.get_places()
 
 
 
@@ -417,10 +422,12 @@ class TypingText(object):
 
 
 class InputBox:
-    def __init__(self, x, y, w, h,game, text=''):
+    def __init__(self, x, y, w, h,game, text='',position = 'left'):
         self.rect = pg.Rect(x, y, w, h)
         self.color = COLOR_INACTIVE
         self.text = text
+        if position == 'mid':
+            self.rect.midbottom = (x,y)
         self.txt_surface = pg.font.Font(font_name, input_font_size).render(text, True, self.color)
         self.active = False
         self.game = game
@@ -460,6 +467,33 @@ class InputBox:
         screen.blit(self.txt_surface, (self.rect.x+5, self.rect.y+5))
         # Blit the rect.
         pg.draw.rect(screen, self.color, self.rect, 2)
+
+    def get_name(self,event):
+
+        if True:
+            if event.type == pg.MOUSEBUTTONDOWN:
+                # If the user clicked on the input_box rect.
+                if self.rect.collidepoint(event.pos):
+                    # Toggle the active variable.
+                    self.active = not self.active
+                else:
+                    self.active = False
+                # Change the current color of the input box.
+                self.color = COLOR_ACTIVE if self.active else COLOR_INACTIVE
+            if event.type == pg.KEYDOWN:
+                if self.active:
+                    if event.key == pg.K_RETURN: #game query set to user input,
+                        print(self.text)
+                        self.game.player_name = self.text
+                        self.text = ''
+                        self.active = False
+                    elif event.key == pg.K_BACKSPACE:
+                        self.text = self.text[:-1]
+                    else:
+                        self.text += event.unicode
+                    # Re-render the text.
+                    self.txt_surface = pg.font.Font(font_name, input_font_size).render(self.text, True, self.color)
+                self.color = COLOR_ACTIVE if self.active else COLOR_INACTIVE
 
 class Query(object):
     def __init__(self,game):
@@ -537,3 +571,78 @@ class Query(object):
                     break
             self.a = self.a[:i]
 
+class Scoreboard(object):
+    def __init__(self,x,y,width,height,game):
+        self.game = game
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.places = []
+        self.rect = (x-width//2,y,width, height)
+        self.text=''
+    def update(self): #live feed of places?
+        pass
+
+    def draw(self):
+        pg.draw.rect(self.game.screen, WHITE, (0,0,SCREEN_WIDTH,SCREEN_HEIGHT))
+        pg.draw.rect(self.game.screen, RED, (self.x-self.width//2,self.y-70,self.width,self.height+100+50*len(self.places)))
+        # drawText(self.game.screen,self.text,BLACK,self.rect,font_name,aa=True)
+        draw_text(self.game.screen, 'Race Results', 50, self.x, self.y - 60, BLACK, pos='mid')
+        for i in range(len(self.places)):
+            self.text = f'{i+1}. {self.places[i]}' #add stats
+            id = self.places[i]
+
+
+
+            if id == self.game.player_name:
+                stats = self.game.typing_text.stats[0][1:]
+            else:
+                stats = self.game.typing_text.stats[i][1:]
+            draw_text(self.game.screen,self.text,35,self.x,self.y+50*i,BLACK,pos='mid')
+            draw_text(self.game.screen, str(stats), 25, self.x, self.y +50 * i + 30, BLACK, pos = 'mid')
+
+    def get_places(self): #add jackster
+        l = []
+        r = []
+        for racer in enumerate(self.game.typing_text.stats):
+            pos = racer[-1][0]
+            r.append(racer) #r contains all racers in [(0,[gamestats]),(1,[gamestats]), etc]
+            l.append(pos)
+
+        l.sort(reverse=True) #l is list of positions greatest to least
+        ranks = []
+        for pos in l:
+            for racer in r:
+                if pos == racer[-1][0]:
+                    racer_id = racer[0]
+                    ranks.append(racer_id)
+
+        #ranks is a list in order of place with 0=player, 1=bot1, ... n=botn
+        #convert ranks into string list
+        s = []
+        for item in ranks:
+            if item == 0:
+                s.append(self.game.player_name)
+            else:
+                s.append(f'Bot {item}')
+
+        self.places = s
+        # self.text = ' \n\n '.join(self.places)
+
+
+
+
+
+        # orders = {
+        #     'cappuccino': 54,
+        #     'latte': 56,
+        #     'espresso': 72,
+        #     'americano': 48,
+        #     'cortado': 41
+        # }
+        #
+        # sort_orders = sorted(orders.items(), key=lambda x: x[1])
+        #
+        # for i in sort_orders:
+        #     print(i[0], i[1])

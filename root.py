@@ -12,6 +12,8 @@ class Game(object):
         self.screen = pg.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
         #self.screen = pg.display.set_mode([SCREEN_WIDTH,SCREEN_HEIGHT], pg.FULLSCREEN)
 
+        self.player_name = ''
+
         #webscraping
         self.online = False
         self.webscraper = Query(self)
@@ -41,6 +43,8 @@ class Game(object):
         #input box
         self.input_box=InputBox(SCREEN_WIDTH-300,100,100,30,self,'')
 
+        #scoreboard
+        self.scoreboard = Scoreboard(SCREEN_WIDTH//2,SCREEN_HEIGHT//3,SCREEN_WIDTH//2,50,self)
 
         #sprite groups
 
@@ -59,8 +63,6 @@ class Game(object):
 
         #initialize typing text
         self.typing_text=TypingText(SCREEN_WIDTH//2,SCREEN_HEIGHT//4*3,BLACK,font_name,20,self)
-
-
 
         self.run()
 
@@ -197,16 +199,19 @@ class Game(object):
         #self.screen.blit(bg,(0,0))
         self.screen.fill(BLACK)
         self.all_sprites.draw(self.screen)
-        pg.draw.rect(self.screen, WHITE, (paddingx-2,SCREEN_HEIGHT*2//3,SCREEN_WIDTH-2*paddingx + 10,SCREEN_HEIGHT//3-paddingy))
+        # pg.draw.rect(self.screen, WHITE, (paddingx-2,SCREEN_HEIGHT*2//3,SCREEN_WIDTH-2*paddingx + 10,SCREEN_HEIGHT//3-paddingy))
         self.typing_text.draw()
+        if self.typing_text.end_of_passage:
+            self.scoreboard.draw()
 
         draw_text(self.screen,'WPM: ' + str(round(self.wpm)),30, 100,100, WHITE)
         draw_text(self.screen, 'Timer: ' + str(round(self.timer,1)) + ' seconds', 30 , 100, 70, WHITE)
         draw_text(self.screen, f'Calibrated WPM: {round(self.calibrated_wpm)}' , 30, 100, 130, WHITE)
         draw_text(self.screen, f'Accuracy: {round(self.accuracy, 2)}%', 30, 100, 160, WHITE)
-        draw_text(self.screen, "Begin typing to start timer.", 30, SCREEN_WIDTH//2, 30, WHITE, pos = 'mid')
+        draw_text(self.screen, f"Begin typing to start timer, {self.player_name}.", 30, SCREEN_WIDTH//2, 30, WHITE, pos = 'mid')
 
-        self.input_box.draw(self.screen)
+        if not self.typing_text.end_of_passage:
+            self.input_box.draw(self.screen)
 
 
 
@@ -214,9 +219,44 @@ class Game(object):
         pg.display.update()
 
     def show_start_screen(self):
-        pass #show online status
+        #show online status
+        named = False
+        # start screen input name
+        self.get_player_name = InputBox(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, 200, 30, self,position = 'mid')
+        while not named:
+            self.clock.tick(FPS)
 
-    def wait_for_key(self):
+            self.screen.fill(RED)
+
+
+
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    self.running = False
+                    named = True
+
+                # input box event
+                self.get_player_name.get_name(event)
+
+
+
+
+
+
+            self.get_player_name.draw(self.screen)
+            draw_text(self.screen,'Gimme ur name RIGHT NOW:', 50, SCREEN_WIDTH//2, SCREEN_HEIGHT//2 - 100, BLACK, pos = 'mid')
+
+            self.get_player_name.update()
+            if self.player_name != '' and len(self.player_name)>1:
+                named = True
+
+
+            pg.display.update()
+
+
+        # self.wait_for_click()
+
+    def wait_for_click(self):
         waiting = True
         while waiting:
             self.clock.tick(FPS)
@@ -224,17 +264,15 @@ class Game(object):
                 if event.type == pg.QUIT:
                     waiting = False
                     self.running = False
-                if event.type == pg.KEYDOWN and self.running:
+                if event.type == pg.MOUSEBUTTONDOWN and self.running:
                     waiting = False
 
     def show_go_screen(self):
         if not self.running:
             return
 
-        #display results of round
-        self.screen.fill(GREEN)
 
-        self.wait_for_key()
+        self.wait_for_click()
 
 
 
@@ -243,6 +281,7 @@ class Game(object):
 g = Game()
 g.show_start_screen()
 while g.running:
+    # g.show_start_screen()
     g.new()
     g.show_go_screen()
 

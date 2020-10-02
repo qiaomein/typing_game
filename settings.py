@@ -3,6 +3,8 @@ from pygame.constants import *
 
 url='https://www.google.com/search?q='
 
+player_name = 'Qiaoster'
+
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 800
 FPS = 120
@@ -45,6 +47,7 @@ GREEN = (0, 255, 0)
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 GRAY = (131,152,171)
+RED = (255,69,69)
 GHOSTED_TEXT = (149,149,149)
 paddingx = 50
 paddingy = 50
