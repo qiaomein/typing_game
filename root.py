@@ -41,7 +41,7 @@ class Game(object):
 
     def new(self):
         #input box
-        self.input_box=InputBox(SCREEN_WIDTH-300,100,100,30,self,'')
+        self.input_box=InputBox(SCREEN_WIDTH//2,100,100,30,self,'',position = 'mid')
 
         #scoreboard
         self.scoreboard = Scoreboard(SCREEN_WIDTH//2,SCREEN_HEIGHT//3,SCREEN_WIDTH//2,50,self)
@@ -197,7 +197,7 @@ class Game(object):
 
 
     def draw(self):
-        #self.screen.blit(bg,(0,0))
+        # self.screen.blit(bg,(0,0))
         self.screen.fill(BLACK)
         self.all_sprites.draw(self.screen)
         # pg.draw.rect(self.screen, WHITE, (paddingx-2,SCREEN_HEIGHT*2//3,SCREEN_WIDTH-2*paddingx + 10,SCREEN_HEIGHT//3-paddingy))
@@ -205,10 +205,10 @@ class Game(object):
         if self.typing_text.end_of_passage:
             self.scoreboard.draw()
 
-        draw_text(self.screen,'WPM: ' + str(round(self.wpm)),30, 100,100, WHITE)
-        draw_text(self.screen, 'Timer: ' + str(round(self.timer,1)) + ' seconds', 30 , 100, 70, WHITE)
-        draw_text(self.screen, f'Calibrated WPM: {round(self.calibrated_wpm)}' , 30, 100, 130, WHITE)
-        draw_text(self.screen, f'Accuracy: {round(self.accuracy, 2)}%', 30, 100, 160, WHITE)
+        draw_text(self.screen,'WPM: ' + str(round(self.wpm)),30, 70,750, WHITE)
+        draw_text(self.screen, 'Timer: ' + str(round(self.timer,1)) + ' s', 30 , 230, 750, WHITE)
+        draw_text(self.screen, f'Calibrated WPM: {round(self.calibrated_wpm)}' , 25, 480, 755, WHITE)
+        draw_text(self.screen, f'Accuracy: {round(self.accuracy, 2)}%', 30, 750, 750, WHITE)
         draw_text(self.screen, f"Begin typing to start timer, {self.player_name}.", 30, SCREEN_WIDTH//2, 30, WHITE, pos = 'mid')
 
         if not self.typing_text.end_of_passage:
@@ -247,11 +247,6 @@ class Game(object):
 
                 # input box event
                 self.get_player_name.get_name(event)
-
-
-
-
-
 
             self.get_player_name.draw(self.screen)
             draw_text(self.screen,'Gimme ur name RIGHT NOW:', 50, SCREEN_WIDTH//2, SCREEN_HEIGHT//2 - 100, BLACK, pos = 'mid')

@@ -489,7 +489,7 @@ class InputBox:
                     else:
                         self.text += event.unicode
                     # Re-render the text.
-                    self.txt_surface = pg.font.Font(font_name, input_font_size).render(self.text, True, self.color)
+                    self.txt_surface = pg.font.Font(font_name, input_font_size).render(self.text, True, BLACK)
                 self.color = COLOR_ACTIVE if self.active else COLOR_INACTIVE
 
 class Query(object):
