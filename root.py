@@ -141,8 +141,9 @@ class Game(object):
                 platform.kill()
 
             jackster_chance = random.randint(1,100)
-            if jackster_chance<20:
+            if jackster_chance<JACKSTER_CHANCE:
                 Jackster(self.player.x, y_datum-(NUM_BOTS+1)*45, 64, 40, self, color = GREEN)
+
 
             self.new_round = False
 
@@ -226,8 +227,17 @@ class Game(object):
         while not named:
             self.clock.tick(FPS)
 
-            self.screen.fill(RED)
+            self.screen.fill((52,100,235))
 
+            if self.online:
+                online_text = 'Online'
+                color = GREEN
+            else:
+                online_text = 'Offline'
+                color = (255,0,0)
+
+            draw_text(self.screen, f'Status: {online_text}', 50, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 180, color,
+                      pos='mid')
 
 
             for event in pg.event.get():
@@ -281,7 +291,6 @@ class Game(object):
 g = Game()
 g.show_start_screen()
 while g.running:
-    # g.show_start_screen()
     g.new()
     g.show_go_screen()
 

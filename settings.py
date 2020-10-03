@@ -20,6 +20,7 @@ PLAYER_LAYER = 1
 BOT_LAYER = 1
 
 NUM_BOTS = 4
+JACKSTER_CHANCE = 90
 
 winning_score = 40
 

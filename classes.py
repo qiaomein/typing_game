@@ -324,7 +324,8 @@ class TypingText(object):
     def load_passage(self): #sets self.passage to passage
         with open('data/preloads.txt', 'r') as f:
             contents = f.read()
-        self.passage = random.choice(contents.split('\n\n'))
+        # self.passage = random.choice(contents.split('\n\n'))
+        self.passage = 'test passage'
         #for debugging
         if not self.game.calibrated:
             self.passage = calibration_text
@@ -391,7 +392,7 @@ class TypingText(object):
             self.game.calibrated_wpm = (self.game.wpm + self.game.calibrated_wpm) / 2
 
 
-        #get all stats for record keeping before next round
+        #get all stats for record keeping before next round before resetting
         self.get_stats()
 
 
@@ -415,10 +416,6 @@ class TypingText(object):
             self.stats.append([bot.pos.x,bot.wpm,bot_timer,100])
         print(self.stats)
         self.game.scoreboard.get_places()
-
-
-
-
 
 
 class InputBox:
@@ -586,48 +583,59 @@ class Scoreboard(object):
 
     def draw(self):
         pg.draw.rect(self.game.screen, WHITE, (0,0,SCREEN_WIDTH,SCREEN_HEIGHT))
-        pg.draw.rect(self.game.screen, RED, (self.x-self.width//2,self.y-70,self.width,self.height+100+50*len(self.places)))
+        pg.draw.rect(self.game.screen, RED, (self.x-self.width//2,self.y-70,self.width,self.height+100+70*len(self.places)))
         # drawText(self.game.screen,self.text,BLACK,self.rect,font_name,aa=True)
         draw_text(self.game.screen, 'Race Results', 50, self.x, self.y - 60, BLACK, pos='mid')
-        for i in range(len(self.places)):
+        self.draw_places()
+
+    def draw_places(self):
+        rlist = []
+        for racer in enumerate(self.game.typing_text.stats):  # each racer is of (id, stats)
+            rlist.append(racer)
+        rlist.sort(key=lambda n: n[1], reverse=True)
+        for i in range(len(rlist)):
             self.text = f'{i+1}. {self.places[i]}' #add stats
-            id = self.places[i]
+
+            #stats sorting
+
+            stats = rlist[i][1]
+            stats = stats[1:]
 
 
+            stats = [f'{round(stats[0],1)} WPM',f'{round(stats[1],2)} s',f'{round(stats[2],2)}%']
 
-            if id == self.game.player_name:
-                stats = self.game.typing_text.stats[0][1:]
-            else:
-                stats = self.game.typing_text.stats[i][1:]
-            draw_text(self.game.screen,self.text,35,self.x,self.y+50*i,BLACK,pos='mid')
-            draw_text(self.game.screen, str(stats), 25, self.x, self.y +50 * i + 30, BLACK, pos = 'mid')
+            draw_text(self.game.screen,self.text,35,self.x,self.y+70*i,BLACK,pos='mid')
+            draw_text(self.game.screen, '   '.join(stats), 25, self.x, self.y+70*i +40, BLACK, pos = 'mid')
 
     def get_places(self): #add jackster
-        l = []
-        r = []
-        for racer in enumerate(self.game.typing_text.stats):
-            pos = racer[-1][0]
-            r.append(racer) #r contains all racers in [(0,[gamestats]),(1,[gamestats]), etc]
-            l.append(pos)
-
-        l.sort(reverse=True) #l is list of positions greatest to least
-        ranks = []
-        for pos in l:
-            for racer in r:
-                if pos == racer[-1][0]:
-                    racer_id = racer[0]
-                    ranks.append(racer_id)
-
-        #ranks is a list in order of place with 0=player, 1=bot1, ... n=botn
-        #convert ranks into string list
-        s = []
-        for item in ranks:
-            if item == 0:
-                s.append(self.game.player_name)
-            else:
-                s.append(f'Bot {item}')
-
-        self.places = s
+        # self.places = []
+        # l = []
+        # r = []
+        # for racer in enumerate(self.game.typing_text.stats):
+        #     pos = racer[-1][0]
+        #     r.append(racer) #r contains all racers in [(0,[gamestats]),(1,[gamestats]), etc]
+        #     l.append(pos)
+        #
+        # l.sort(reverse=True) #l is list of positions greatest to least
+        # ranks = []
+        # for pos in l:
+        #     for racer in r:
+        #         if pos == racer[1][0]:
+        #             racer_id = racer[0]
+        #             ranks.append(racer_id)
+        #
+        # #ranks is a list in order of place with 0=player, 1=bot1, ... n=botn
+        # #convert ranks into string list
+        # s = []
+        # for item in ranks:
+        #     if item == 0:
+        #         s.append(self.game.player_name)
+        #     else:
+        #         s.append(f'Bot {item}')
+        # s = s[:NUM_BOTS+1]
+        #
+        # self.places = s
+        # print(self.places)
         # self.text = ' \n\n '.join(self.places)
 
 
@@ -646,3 +654,18 @@ class Scoreboard(object):
         #
         # for i in sort_orders:
         #     print(i[0], i[1])
+        rlist = []
+        for racer in enumerate(self.game.typing_text.stats): #each racer is of (id, stats)
+            rlist.append(racer)
+        #rlist is [(id,[stats]),etc]
+
+        rlist.sort(key = lambda n:n[1],reverse=True)
+        places=[]
+        for racer in rlist:
+            if racer[0] == 0:
+                name = self.game.player_name
+            else:
+                name = f'Bot {racer[0]}'
+            places.append(name)
+        self.places = places
+        print(self.places)
