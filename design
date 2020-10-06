@@ -15,9 +15,10 @@ Things to fix up:
     -formatting webscraped text
 
 -gamemodes/title screen?
--end screen and reset
--results screen
+-end screen and reset [DONE]
+-results screen [DONE]
 -add graphics
+-add reset game button
 
 -finding fairness of the game (send to ppl to test out typing fairness s,k,d)
     if player is behind, make it easy to comeback with some pity factor
@@ -27,4 +28,5 @@ Things to fix up:
 
 --import poem
 
---randomly add the legendary Jackster! [DONE]
+--randomly add the legendary Jackster! [almost done]
+

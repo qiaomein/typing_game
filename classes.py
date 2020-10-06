@@ -387,6 +387,7 @@ class TypingText(object):
         self.end_of_passage = True
 
 
+
         if self.game.calibrated and not self.game.new_round and not self.game.input_box.active:
             print(f'{self.game.calibrated_wpm},{self.game.wpm}')
             self.game.calibrated_wpm = (self.game.wpm + self.game.calibrated_wpm) / 2
@@ -402,6 +403,8 @@ class TypingText(object):
         self.streak = 0
         self.game.total_char_typed = 0
         self.game.player.vel.x = 0
+        self.load_passage()
+        self.passage_clone = self.passage
 
         # self.game.player.pos = vec(text_rect[0]+32,text_rect[1])
 
@@ -412,7 +415,10 @@ class TypingText(object):
         length = len(self.game.typing_text.passage)
 
         for bot in self.game.bots:
-            bot_timer = 12*length/bot.wpm
+            if bot.wpm != 0:
+                bot_timer = 12*length/bot.wpm
+            else:
+                bot_timer = 0
             self.stats.append([bot.pos.x,bot.wpm,bot_timer,100])
         print(self.stats)
         self.game.scoreboard.get_places()
@@ -491,6 +497,34 @@ class InputBox:
                     # Re-render the text.
                     self.txt_surface = pg.font.Font(font_name, input_font_size).render(self.text, True, BLACK)
                 self.color = COLOR_ACTIVE if self.active else COLOR_INACTIVE
+
+class ResetGameButton(object):
+    def __init__(self,x,y,w,h,game,text = 'Reset Game'):
+        self.rect = pg.Rect(x,y,w,h)
+        self.text = text
+        self.game = game
+        self.txt_surface = pg.font.Font(font_name, input_font_size).render(text, True, WHITE)
+        self.active = False
+
+    def handle_event(self,event):
+        if event.type == pg.MOUSEBUTTONDOWN:
+            # If the user clicked on the input_box rect.
+            if self.rect.collidepoint(event.pos):
+                # Toggle the active variable.
+                self.active = not self.active
+                self.reset_game()
+            else:
+                self.active = False
+            # Change the current color of the input box.
+
+    def reset_game(self):
+        self.game.typing_text.reset_game()
+
+    def draw(self, screen):
+        # Blit the text.
+        screen.blit(self.txt_surface, (self.rect.x+5, self.rect.y+5))
+        # Blit the rect.
+        pg.draw.rect(screen, WHITE, self.rect, 2)
 
 class Query(object):
     def __init__(self,game):

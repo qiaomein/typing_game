@@ -41,7 +41,10 @@ class Game(object):
 
     def new(self):
         #input box
-        self.input_box=InputBox(SCREEN_WIDTH//2,100,100,30,self,'',position = 'mid')
+        self.input_box=InputBox(SCREEN_WIDTH//2,120,200,30,self,'',position = 'mid')
+
+        #reset game button
+        self.reset_game_button = ResetGameButton(100,100,100,100,self)
 
         #scoreboard
         self.scoreboard = Scoreboard(SCREEN_WIDTH//2,SCREEN_HEIGHT//3,SCREEN_WIDTH//2,50,self)
@@ -169,6 +172,7 @@ class Game(object):
             #input box event
             if self.online:
                 self.input_box.handle_event(event)
+            self.reset_game_button.handle_event(event)
 
             if event.type == pg.KEYDOWN:
                 self.typing_text.wrong_letter_flag = False  # to penalize for multiple wrong keys even if stuck
@@ -209,12 +213,16 @@ class Game(object):
         draw_text(self.screen, 'Timer: ' + str(round(self.timer,1)) + ' s', 30 , 230, 750, WHITE)
         draw_text(self.screen, f'Calibrated WPM: {round(self.calibrated_wpm)}' , 25, 480, 755, WHITE)
         draw_text(self.screen, f'Accuracy: {round(self.accuracy, 2)}%', 30, 750, 750, WHITE)
-        draw_text(self.screen, f"Begin typing to start timer, {self.player_name}.", 30, SCREEN_WIDTH//2, 30, WHITE, pos = 'mid')
 
-        if not self.typing_text.end_of_passage:
+        if not self.typing_text.start:
+            draw_text(self.screen, f"Begin typing to start timer, {self.player_name}.", 30, SCREEN_WIDTH//2, 30, WHITE, pos = 'mid')
+
+
+        if not self.typing_text.end_of_passage and self.calibrated and not self.typing_text.start:
+            draw_text(self.screen, f'Type about something new:', 20, 130,self.input_box.rect[1],WHITE)
             self.input_box.draw(self.screen)
 
-
+        self.reset_game_button.draw(self.screen)
 
 
         pg.display.update()
