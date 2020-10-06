@@ -35,6 +35,7 @@ class Game(object):
         #misc
         self.calibrated = False
         self.new_round = True
+        self.jackster_round = False
 
 
         self.running = True
@@ -44,16 +45,17 @@ class Game(object):
         self.input_box=InputBox(SCREEN_WIDTH//2,120,200,30,self,'',position = 'mid')
 
         #reset game button
-        self.reset_game_button = ResetGameButton(100,100,100,100,self)
+        self.reset_game_button = ResetGameButton(100,50,150,35,self,position = 'mid')
 
         #scoreboard
-        self.scoreboard = Scoreboard(SCREEN_WIDTH//2,SCREEN_HEIGHT//3,SCREEN_WIDTH//2,50,self)
+        self.scoreboard = Scoreboard(SCREEN_WIDTH//2,SCREEN_HEIGHT//4,SCREEN_WIDTH//2,50,self)
 
         #sprite groups
 
         # self.all_sprites = pg.sprite.Group()
         self.all_sprites = pg.sprite.LayeredUpdates()
         self.bots = pg.sprite.Group()
+        self.jacksters = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
 
         self.player = Player(text_rect[0]+32,text_rect[1],64,100,self)
@@ -116,6 +118,9 @@ class Game(object):
             for bot in self.bots:
                 bot.pos.x -= abs(int(self.player.vel.x))
 
+            for jackster in self.jacksters:
+                jackster.pos.x -= abs(int(self.player.vel.x))
+
             for plat in self.platforms:
                 if plat.type == 'platform':
                     plat.rect.x -= abs(int(self.player.vel.x))
@@ -127,6 +132,8 @@ class Game(object):
         if self.calibrated and self.new_round:
             for bot in self.bots:
                 bot.kill()
+            for jackster in self.jacksters:
+                jackster.kill()
 
             y_datum = self.player.y - self.player.height
 
@@ -146,6 +153,7 @@ class Game(object):
             jackster_chance = random.randint(1,100)
             if jackster_chance<JACKSTER_CHANCE:
                 Jackster(self.player.x, y_datum-(NUM_BOTS+1)*45, 64, 40, self, color = GREEN)
+                self.jackster_round = True
 
 
             self.new_round = False
@@ -157,7 +165,6 @@ class Game(object):
 
             l= [(SCREEN_WIDTH + i) for i in range(300,1000,width)]
             self.tempx = random.choice(l)
-
 
             self.tempy = 500
             Platform(self.tempx, self.tempy, width, PLATFORM_THICKNESS, 'platform', self)
@@ -172,12 +179,15 @@ class Game(object):
             #input box event
             if self.online:
                 self.input_box.handle_event(event)
+
+            #if reset game button is pressed
             self.reset_game_button.handle_event(event)
 
             if event.type == pg.KEYDOWN:
                 self.typing_text.wrong_letter_flag = False  # to penalize for multiple wrong keys even if stuck
+                if not self.typing_text.end_of_passage: self.typing_text.feed_in = event.unicode
                 self.typing_text.end_of_passage=False #if after calibration starts typing
-                self.typing_text.feed_in = event.unicode
+
                 if event.key not in [K_RSHIFT, K_LSHIFT]: self.total_char_typed += 1
                 print(self.typing_text.feed_in)
 

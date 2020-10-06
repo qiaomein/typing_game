@@ -197,7 +197,7 @@ class Bot(pg.sprite.Sprite):
 
 class Jackster(pg.sprite.Sprite):
     def __init__(self,x,y,width,height,game,color=WHITE):
-        self.groups = game.all_sprites
+        self.groups = game.all_sprites, game.jacksters
         self._layer = BOT_LAYER
         pg.sprite.Sprite.__init__(self, self.groups)
         self.x = x
@@ -209,7 +209,7 @@ class Jackster(pg.sprite.Sprite):
         self.current_frame = 0
         self.walking = False
         self.game = game
-        self.wpm = random.randint(round(self.game.calibrated_wpm)-30, round(self.game.calibrated_wpm) + 2)
+        self.wpm = random.randint(round(self.game.calibrated_wpm)-5, round(self.game.calibrated_wpm) + 10)
 
         # self.image = get_image(pg.image.load("data/images/idle.png"), self.width, self.height)
         # self.rect = self.image.get_rect()
@@ -420,6 +420,13 @@ class TypingText(object):
             else:
                 bot_timer = 0
             self.stats.append([bot.pos.x,bot.wpm,bot_timer,100])
+        for jackster in self.game.jacksters:
+            if jackster.wpm != 0:
+                jackster_timer = 12*length/jackster.wpm
+            else:
+                jackster_timer = 0
+            self.stats.insert(1,[jackster.pos.x,jackster.wpm,jackster_timer,100])
+
         print(self.stats)
         self.game.scoreboard.get_places()
 
@@ -499,12 +506,14 @@ class InputBox:
                 self.color = COLOR_ACTIVE if self.active else COLOR_INACTIVE
 
 class ResetGameButton(object):
-    def __init__(self,x,y,w,h,game,text = 'Reset Game'):
+    def __init__(self,x,y,w,h,game,text = 'Reset Game',position = 'left'):
         self.rect = pg.Rect(x,y,w,h)
         self.text = text
         self.game = game
         self.txt_surface = pg.font.Font(font_name, input_font_size).render(text, True, WHITE)
         self.active = False
+        if position == 'mid':
+            self.rect.midbottom = (x,y)
 
     def handle_event(self,event):
         if event.type == pg.MOUSEBUTTONDOWN:
@@ -538,27 +547,22 @@ class Query(object):
         self.a = ''
 
     def fetch(self):
-        self.query = self.game.query.replace('','+')
+        self.query = self.game.query.replace(' ','+')
         self.source = requests.get(f'{url}{self.query}').text
         self.soup = BeautifulSoup(self.source, 'lxml')
 
 
         for summary in self.soup.find_all('div', id = 'main'):
+            self.a = summary.text
+            self.format_a()
             try:
-                self.a = summary.text
-                self.format_a()
                 if 'View allView all' not in self.a:
                     print('ran through try1')
                     self.a = self.a.split('View all')[1]
                     self.a = space_caps(self.a).replace('  ', ' ')
                     self.truncate_a()
-                    if 'Metacritic' in self.a and 'Rotten Tomatoes' in self.a:
+                    if 'Metacritic' in self.a or 'Rotten Tomatoes' in self.a:
                         self.a = self.a.split('Metacritic ')[1]
-                    print(self.a)
-                    self.game.typing_text.reset_game()
-                    self.game.typing_text.passage = self.a
-                    self.game.typing_text.passage_clone = self.game.typing_text.passage
-
                 else:
                     print('ran through try2')
                     self.a = self.a.split('resultsVerbatim')[1].split('View allView all')[0]
@@ -566,23 +570,17 @@ class Query(object):
                     self.truncate_a()
                     if 'Metacritic' in self.a and 'Rotten Tomatoes' in self.a:
                         self.a = self.a.split('Metacritic ')[1]
-                    print(self.a)
-                    self.game.typing_text.reset_game()
-                    self.game.typing_text.passage = self.a
-                    self.game.typing_text.passage_clone = self.game.typing_text.passage
             except:
-                self.a = summary.text
-                self.format_a()
                 self.a = self.a.split('resultsVerbatim')[1]
                 self.a = space_caps(self.a).replace('  ', ' ')
                 print('ran through except')
                 self.truncate_a()
                 if 'Metacritic' in self.a and 'Rotten Tomatoes' in self.a:
                     self.a = self.a.split('Metacritic ')[1]
-                print(self.a)
-                self.game.typing_text.reset_game()
-                self.game.typing_text.passage = self.a
-                self.game.typing_text.passage_clone = self.game.typing_text.passage
+            print(self.a)
+            self.game.typing_text.reset_game()
+            self.game.typing_text.passage = self.a
+            self.game.typing_text.passage_clone = self.game.typing_text.passage
 
     def format_a(self):
         self.a = self.a.replace('·', ' ')
@@ -620,6 +618,7 @@ class Scoreboard(object):
         pg.draw.rect(self.game.screen, RED, (self.x-self.width//2,self.y-70,self.width,self.height+100+70*len(self.places)))
         # drawText(self.game.screen,self.text,BLACK,self.rect,font_name,aa=True)
         draw_text(self.game.screen, 'Race Results', 50, self.x, self.y - 60, BLACK, pos='mid')
+        draw_text(self.game.screen, f'Press any key to continue', 30, SCREEN_WIDTH//2, SCREEN_HEIGHT-100,BLACK, pos = 'mid')
         self.draw_places()
 
     def draw_places(self):
@@ -642,52 +641,6 @@ class Scoreboard(object):
             draw_text(self.game.screen, '   '.join(stats), 25, self.x, self.y+70*i +40, BLACK, pos = 'mid')
 
     def get_places(self): #add jackster
-        # self.places = []
-        # l = []
-        # r = []
-        # for racer in enumerate(self.game.typing_text.stats):
-        #     pos = racer[-1][0]
-        #     r.append(racer) #r contains all racers in [(0,[gamestats]),(1,[gamestats]), etc]
-        #     l.append(pos)
-        #
-        # l.sort(reverse=True) #l is list of positions greatest to least
-        # ranks = []
-        # for pos in l:
-        #     for racer in r:
-        #         if pos == racer[1][0]:
-        #             racer_id = racer[0]
-        #             ranks.append(racer_id)
-        #
-        # #ranks is a list in order of place with 0=player, 1=bot1, ... n=botn
-        # #convert ranks into string list
-        # s = []
-        # for item in ranks:
-        #     if item == 0:
-        #         s.append(self.game.player_name)
-        #     else:
-        #         s.append(f'Bot {item}')
-        # s = s[:NUM_BOTS+1]
-        #
-        # self.places = s
-        # print(self.places)
-        # self.text = ' \n\n '.join(self.places)
-
-
-
-
-
-        # orders = {
-        #     'cappuccino': 54,
-        #     'latte': 56,
-        #     'espresso': 72,
-        #     'americano': 48,
-        #     'cortado': 41
-        # }
-        #
-        # sort_orders = sorted(orders.items(), key=lambda x: x[1])
-        #
-        # for i in sort_orders:
-        #     print(i[0], i[1])
         rlist = []
         for racer in enumerate(self.game.typing_text.stats): #each racer is of (id, stats)
             rlist.append(racer)
@@ -698,6 +651,8 @@ class Scoreboard(object):
         for racer in rlist:
             if racer[0] == 0:
                 name = self.game.player_name
+            elif self.game.jackster_round and racer[0] == 1:
+                name = f'The Jackster'
             else:
                 name = f'Bot {racer[0]}'
             places.append(name)
