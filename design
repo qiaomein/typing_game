@@ -18,15 +18,15 @@ Things to fix up:
 -end screen and reset [DONE]
 -results screen [DONE]
 -add graphics
--add reset game button
+-add reset game button [DONE]
 
 -finding fairness of the game (send to ppl to test out typing fairness s,k,d)
     if player is behind, make it easy to comeback with some pity factor
     try speed=wpm and accel = change in wpm
 
--change icon and title
+-change icon and title [DONE]
 
 --import poem
 
---randomly add the legendary Jackster! [almost done]
+--randomly add the legendary Jackster! [DONE]
 

@@ -7,6 +7,8 @@ class Game(object):
     def __init__(self):
         pg.init()
         pg.display.set_caption('Not a Typing Test')
+
+        pg.display.set_icon(programIcon)
         self.clock = pg.time.Clock()
         self.score = 0
         self.screen = pg.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
@@ -44,8 +46,9 @@ class Game(object):
         #input box
         self.input_box=InputBox(SCREEN_WIDTH//2,120,200,30,self,'',position = 'mid')
 
-        #reset game button
-        self.reset_game_button = ResetGameButton(100,50,150,35,self,position = 'mid')
+        #buttons
+        self.reset_game_button = GameButton(100,50,150,35,'reset_game',self,position = 'mid')
+        self.random_fact_button = GameButton(SCREEN_WIDTH*3//4, 120, 150, 30, 'random_fact',self, text = 'Random Fact',position = 'mid')
 
         #scoreboard
         self.scoreboard = Scoreboard(SCREEN_WIDTH//2,SCREEN_HEIGHT//4,SCREEN_WIDTH//2,50,self)
@@ -104,7 +107,7 @@ class Game(object):
         """
 
         #instantaneous wpm calculator
-        if self.timer > 0.09: self.wpm = (self.char_typed/5)/(self.timer/60)
+        if self.timer > 0.1: self.wpm = (self.char_typed/5)/(self.timer/60)
         else: self.wpm = 0
 
         #instantaneous accuracy calculator
@@ -183,6 +186,8 @@ class Game(object):
             #if reset game button is pressed
             self.reset_game_button.handle_event(event)
 
+            self.random_fact_button.handle_event(event)
+
             if event.type == pg.KEYDOWN:
                 self.typing_text.wrong_letter_flag = False  # to penalize for multiple wrong keys even if stuck
                 if not self.typing_text.end_of_passage: self.typing_text.feed_in = event.unicode
@@ -229,8 +234,9 @@ class Game(object):
 
 
         if not self.typing_text.end_of_passage and self.calibrated and not self.typing_text.start:
-            draw_text(self.screen, f'Type about something new:', 20, 130,self.input_box.rect[1],WHITE)
+            draw_text(self.screen, f'Learn something new:', 20, 150,self.input_box.rect[1],WHITE)
             self.input_box.draw(self.screen)
+            self.random_fact_button.draw(self.screen)
 
         self.reset_game_button.draw(self.screen)
 

@@ -4,6 +4,7 @@ import time
 import random
 from bs4 import BeautifulSoup
 import requests
+import re
 
 from pygame.locals import (
     K_UP,
@@ -457,7 +458,7 @@ class InputBox:
                 if self.active:
                     if event.key == pg.K_RETURN: #game query set to user input,
                         self.game.query = self.text
-                        self.game.webscraper.fetch()
+                        self.game.webscraper.fetch(url)
                         self.text = ''
                         self.active = False
                     elif event.key == pg.K_BACKSPACE:
@@ -505,15 +506,22 @@ class InputBox:
                     self.txt_surface = pg.font.Font(font_name, input_font_size).render(self.text, True, BLACK)
                 self.color = COLOR_ACTIVE if self.active else COLOR_INACTIVE
 
-class ResetGameButton(object):
-    def __init__(self,x,y,w,h,game,text = 'Reset Game',position = 'left'):
+class GameButton(object):
+    def __init__(self,x,y,w,h,type,game,text = 'Reset Game',position = 'left'):
         self.rect = pg.Rect(x,y,w,h)
         self.text = text
         self.game = game
         self.txt_surface = pg.font.Font(font_name, input_font_size).render(text, True, WHITE)
+        self.type = type
         self.active = False
         if position == 'mid':
             self.rect.midbottom = (x,y)
+
+    def button_function(self):
+        if self.type == 'reset_game':
+            self.game.typing_text.reset_game()
+        elif self.type == 'random_fact':
+            self.game.webscraper.random_fact()
 
     def handle_event(self,event):
         if event.type == pg.MOUSEBUTTONDOWN:
@@ -521,19 +529,17 @@ class ResetGameButton(object):
             if self.rect.collidepoint(event.pos):
                 # Toggle the active variable.
                 self.active = not self.active
-                self.reset_game()
+                self.button_function()
             else:
                 self.active = False
             # Change the current color of the input box.
-
-    def reset_game(self):
-        self.game.typing_text.reset_game()
 
     def draw(self, screen):
         # Blit the text.
         screen.blit(self.txt_surface, (self.rect.x+5, self.rect.y+5))
         # Blit the rect.
         pg.draw.rect(screen, WHITE, self.rect, 2)
+
 
 class Query(object):
     def __init__(self,game):
@@ -546,7 +552,20 @@ class Query(object):
             self.game.online = False
         self.a = ''
 
-    def fetch(self):
+    def random_fact(self):
+        self.source = requests.get(url2).text
+        self.soup = BeautifulSoup(self.source, 'lxml')
+        for summary in self.soup.find_all('body'):
+            self.a = summary.text
+            self.a = random.choice(self.a.split('\n')[6:-45:2])
+            print(self.a)
+            # self.game.typing_text.reset_game()
+            self.game.typing_text.passage = self.a
+            self.game.typing_text.passage_clone = self.game.typing_text.passage
+
+
+
+    def fetch(self,url):
         self.query = self.game.query.replace(' ','+')
         self.source = requests.get(f'{url}{self.query}').text
         self.soup = BeautifulSoup(self.source, 'lxml')
@@ -587,6 +606,7 @@ class Query(object):
         self.a = self.a.replace('|', '/')
         self.a = self.a.replace('›', '/')
         self.a = self.a.replace('\n', ' ').replace('\t',' ')
+        self.a = self.a.replace("’", "'")
 
     def truncate_a(self):
         """

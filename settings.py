@@ -2,6 +2,7 @@ import pygame as pg
 from pygame.constants import *
 
 url='https://www.google.com/search?q='
+url2= 'https://www.cs.cmu.edu/~bingbin/'
 
 player_name = 'Qiaoster'
 
@@ -10,6 +11,7 @@ SCREEN_HEIGHT = 800
 FPS = 120
 bg = pg.image.load('data/images/bg.png')
 char = pg.image.load('data/images/idle.png')
+programIcon = pg.image.load('data/images/icon.png')
 
 all_fonts = pg.font.get_fonts()
 #font_name = all_fonts[0]
