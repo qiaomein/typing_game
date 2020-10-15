@@ -38,8 +38,6 @@ class Game(object):
         self.calibrated = False
         self.new_round = True
         self.jackster_round = False
-
-
         self.running = True
 
     def new(self):
@@ -157,6 +155,9 @@ class Game(object):
             if jackster_chance<JACKSTER_CHANCE:
                 Jackster(self.player.x, y_datum-(NUM_BOTS+1)*45, 64, 40, self, color = GREEN)
                 self.jackster_round = True
+            else:
+                self.jackster_round = False
+
 
 
             self.new_round = False
@@ -273,7 +274,7 @@ class Game(object):
                 self.get_player_name.get_name(event)
 
             self.get_player_name.draw(self.screen)
-            draw_text(self.screen,'Gimme ur name RIGHT NOW:', 50, SCREEN_WIDTH//2, SCREEN_HEIGHT//2 - 100, BLACK, pos = 'mid')
+            draw_text(self.screen,'Wasgoodies how may I address you?', 50, SCREEN_WIDTH//2, SCREEN_HEIGHT//2 - 100, BLACK, pos = 'mid')
 
             self.get_player_name.update()
             if self.player_name != '' and len(self.player_name)>1:

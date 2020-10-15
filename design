@@ -8,6 +8,12 @@ have different skins: red stolen car, bike, kiwi, fart, walking
 
 
 Things to fix up:
+-import poem
+-design some save system
+-graphics
+    -varied sprite sheets
+    -background
+
 
 -calibration type test [DONE]
 -importing passages from the internet [DONE]
@@ -17,7 +23,7 @@ Things to fix up:
 -gamemodes/title screen?
 -end screen and reset [DONE]
 -results screen [DONE]
--add graphics
+
 -add reset game button [DONE]
 
 -finding fairness of the game (send to ppl to test out typing fairness s,k,d)
@@ -26,7 +32,7 @@ Things to fix up:
 
 -change icon and title [DONE]
 
---import poem
+
 
 --randomly add the legendary Jackster! [DONE]
 

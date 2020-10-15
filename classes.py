@@ -129,9 +129,9 @@ class Bot(pg.sprite.Sprite):
         self.walking = False
         self.game = game
         self.wpm = random.randint(round(self.game.calibrated_wpm)-30, round(self.game.calibrated_wpm) + 2)
+        # self.type = random.choice(['cat','kiwi'])
+        self.type = 'kiwi'
 
-        # self.image = get_image(pg.image.load("data/images/idle.png"), self.width, self.height)
-        # self.rect = self.image.get_rect()
 
         self.image = pg.Surface((self.width, self.height))
         self.image.fill(self.color)
@@ -145,16 +145,23 @@ class Bot(pg.sprite.Sprite):
         self.acc = vec(0, 0)
 
         #graphics
-        self.walkLeft = [pg.image.load('data/images/kiwil1.png'), pg.image.load('data/images/kiwil2.png'),
+        self.walkRight = []
+        if self.type == 'kiwi':
+            self.walkLeft = [pg.image.load('data/images/kiwil1.png'), pg.image.load('data/images/kiwil2.png'),
                           pg.image.load('data/images/kiwil3.png'), pg.image.load('data/images/kiwil4.png'),
                           pg.image.load('data/images/kiwil5.png')]
-        for i in self.walkLeft:
-            i.set_colorkey(BLACK)
+            for frame in self.walkLeft:
+                frame.set_colorkey(BLACK)
+                self.walkRight.append(pg.transform.flip(frame, True, False))
+        elif self.type == 'cat':
+            self.walkRight = [pg.image.load('data/images/cat/catwalk1.jpg'), pg.image.load('data/images/cat/catwalk2.jpg'),
+                             pg.image.load('data/images/cat/catwalk3.jpg')]
+            for frame in self.walkRight:
+                frame.set_colorkey(WHITE)
 
-        self.walkRight = []
-        for frame in self.walkLeft:
-            frame.set_colorkey(BLACK)
-            self.walkRight.append(pg.transform.flip(frame, True, False))
+
+
+
 
     def animate(self):
         now = pg.time.get_ticks()
@@ -325,8 +332,8 @@ class TypingText(object):
     def load_passage(self): #sets self.passage to passage
         with open('data/preloads.txt', 'r') as f:
             contents = f.read()
-        # self.passage = random.choice(contents.split('\n\n'))
-        self.passage = 'test passage'
+        self.passage = random.choice(contents.split('\n\n'))
+        # self.passage = 'test passage'
         #for debugging
         if not self.game.calibrated:
             self.passage = calibration_text
