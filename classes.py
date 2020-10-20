@@ -130,8 +130,7 @@ class Bot(pg.sprite.Sprite):
         self.game = game
         self.wpm = random.randint(round(self.game.calibrated_wpm)-30, round(self.game.calibrated_wpm) + 2)
         # self.type = random.choice(['cat','kiwi'])
-        self.type = 'kiwi'
-
+        self.type = random.choice(['kiwi','boy','yoda'])
 
         self.image = pg.Surface((self.width, self.height))
         self.image.fill(self.color)
@@ -158,10 +157,16 @@ class Bot(pg.sprite.Sprite):
                              pg.image.load('data/images/cat/catwalk3.jpg')]
             for frame in self.walkRight:
                 frame.set_colorkey(WHITE)
-
-
-
-
+        elif self.type == 'boy':
+            self.walkRight = [pg.image.load('data/images/boy2.PNG'),
+                             pg.image.load('data/images/boy1.PNG')]
+            for frame in self.walkRight:
+                frame.set_colorkey(WHITE)
+        elif self.type == 'yoda':
+            self.walkRight = [pg.image.load('data/images/yoda2.PNG'),
+                             pg.image.load('data/images/yoda1.PNG')]
+            for frame in self.walkRight:
+                frame.set_colorkey(WHITE)
 
     def animate(self):
         now = pg.time.get_ticks()
@@ -228,48 +233,50 @@ class Jackster(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
+        self.walkRight = [pg.image.load('data/images/tile001.png'),pg.image.load('data/images/tile002.png'),pg.image.load('data/images/tile003.png'),
+                          pg.image.load('data/images/tile004.png'),pg.image.load('data/images/tile005.png'),pg.image.load('data/images/tile000.png'),]
 
         self.pos = vec(self.x, self.y)
         self.vel = vec(0, 0)
         self.acc = vec(0, 0)
 
-        #graphics
-        self.walkLeft = [pg.image.load('data/images/kiwil1.png'), pg.image.load('data/images/kiwil2.png'),
-                          pg.image.load('data/images/kiwil3.png'), pg.image.load('data/images/kiwil4.png'),
-                          pg.image.load('data/images/kiwil5.png')]
-        for i in self.walkLeft:
-            i.set_colorkey(BLACK)
-
-        self.walkRight = []
-        for frame in self.walkLeft:
-            frame.set_colorkey(BLACK)
-            self.walkRight.append(pg.transform.flip(frame, True, False))
+        # #graphics
+        # self.walkLeft = [pg.image.load('data/images/kiwil1.png'), pg.image.load('data/images/kiwil2.png'),
+        #                   pg.image.load('data/images/kiwil3.png'), pg.image.load('data/images/kiwil4.png'),
+        #                   pg.image.load('data/images/kiwil5.png')]
+        # for i in self.walkLeft:
+        #     i.set_colorkey(BLACK)
+        #
+        # self.walkRight = []
+        # for frame in self.walkLeft:
+        #     frame.set_colorkey(BLACK)
+        #     self.walkRight.append(pg.transform.flip(frame, True, False))
 
     def animate(self):
-        # now = pg.time.get_ticks()
-        # if self.vel.x != 0:
-        #     self.walking = True
-        # else:
-        #     self.walking = False
-        #
-        # if self.walking:
-        #     if self.game.wpm != 0:
-        #         animated_frames = 4000 / self.wpm
-        #     else:
-        #         animated_frames = 60
-        #     if now - self.last_update > animated_frames:
-        #         self.last_update = now
-        #         self.current_frame = (self.current_frame + 1) % len(self.walkRight)
-        #         bottom = self.rect.bottom
-        #         self.image = self.walkRight[self.current_frame]
-        #         self.rect = self.image.get_rect()
-        #         self.rect.bottom = bottom
-        #
-        # else:
-        #     self.image = self.walkRight[0]
-        #     self.rect = self.image.get_rect()
-        #
-        # self.mask = pg.mask.from_surface(self.image)
+        now = pg.time.get_ticks()
+        if self.vel.x != 0:
+            self.walking = True
+        else:
+            self.walking = False
+
+        if self.walking:
+            if self.game.wpm != 0:
+                animated_frames = 4000 / self.wpm
+            else:
+                animated_frames = 60
+            if now - self.last_update > animated_frames:
+                self.last_update = now
+                self.current_frame = (self.current_frame + 1) % len(self.walkRight)
+                bottom = self.rect.bottom
+                self.image = self.walkRight[self.current_frame]
+                self.rect = self.image.get_rect()
+                self.rect.bottom = bottom
+
+        else:
+            self.image = self.walkRight[0]
+            self.rect = self.image.get_rect()
+
+        self.mask = pg.mask.from_surface(self.image)
         pass
 
     def update(self):

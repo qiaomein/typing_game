@@ -139,7 +139,7 @@ class Game(object):
             y_datum = self.player.y - self.player.height
 
             for i in range(NUM_BOTS):
-                Bot(self.player.x, y_datum-i*45, 64, 40, self, color = GRAY)
+                Bot(self.player.x, y_datum-i*90, 64, 90, self, color = GRAY)
 
             self.player.pos = vec(text_rect[0] + 32, text_rect[1])
 
@@ -153,7 +153,7 @@ class Game(object):
 
             jackster_chance = random.randint(1,100)
             if jackster_chance<JACKSTER_CHANCE:
-                Jackster(self.player.x, y_datum-(NUM_BOTS+1)*45, 64, 40, self, color = GREEN)
+                Jackster(self.player.x, y_datum-(NUM_BOTS+1)*70, 64, 40, self, color = GREEN)
                 self.jackster_round = True
             else:
                 self.jackster_round = False
