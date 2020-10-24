@@ -128,7 +128,7 @@ class Bot(pg.sprite.Sprite):
         self.current_frame = 0
         self.walking = False
         self.game = game
-        self.wpm = random.randint(round(self.game.calibrated_wpm)-30, round(self.game.calibrated_wpm) + 2)
+        self.wpm = random.randint(round(self.game.calibrated_wpm)-20, round(self.game.calibrated_wpm))
         # self.type = random.choice(['cat','kiwi'])
         self.type = random.choice(['kiwi','boy','yoda'])
 
@@ -199,6 +199,9 @@ class Bot(pg.sprite.Sprite):
         self.rect.midbottom = self.pos
         if self.type == 'kiwi':
             self.rect.y = self.pos.y - 90
+        elif self.type == 'boy':
+            self.rect.y = self.pos.y -90
+
 
         #motion to wpm
         if self.game.typing_text.start:
@@ -405,7 +408,7 @@ class TypingText(object):
 
 
 
-        if self.game.calibrated and not self.game.new_round and not self.game.input_box.active:
+        if self.game.calibrated and not self.game.new_round and not self.game.input_box.active and not self.game.reset_game_button.resetted:
             print(f'{self.game.calibrated_wpm},{self.game.wpm}')
             self.game.calibrated_wpm = (self.game.wpm + self.game.calibrated_wpm) / 2
 
@@ -527,8 +530,9 @@ class GameButton(object):
         self.rect = pg.Rect(x,y,w,h)
         self.text = text
         self.game = game
-        self.txt_surface = pg.font.Font(font_name, input_font_size).render(text, True, WHITE)
+        self.txt_surface = pg.font.Font(font_name, input_font_size).render(text, True, BLACK)
         self.type = type
+        self.resetted = False
         self.active = False
         if position == 'mid':
             self.rect.midbottom = (x,y)
@@ -545,7 +549,10 @@ class GameButton(object):
             if self.rect.collidepoint(event.pos):
                 # Toggle the active variable.
                 self.active = not self.active
+                if self.type == 'reset_game':
+                    self.resetted = True
                 self.button_function()
+
             else:
                 self.active = False
             # Change the current color of the input box.
@@ -554,7 +561,7 @@ class GameButton(object):
         # Blit the text.
         screen.blit(self.txt_surface, (self.rect.x+5, self.rect.y+5))
         # Blit the rect.
-        pg.draw.rect(screen, WHITE, self.rect, 2)
+        pg.draw.rect(screen, BLACK, self.rect, 2)
 
 
 class Query(object):

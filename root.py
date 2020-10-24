@@ -86,6 +86,9 @@ class Game(object):
         self.typing_text.update()
         self.input_box.update()
 
+        #bugfix on calibrated wpm
+        if self.typing_text.end_of_passage:
+            self.reset_game_button.resetted = False
 
 
         #timer
@@ -163,15 +166,15 @@ class Game(object):
             self.new_round = False
 
         #generating new platforms
-        while len(self.platforms) < plat_limit:
-            width = 100
-            maxdiff = 700
-
-            l= [(SCREEN_WIDTH + i) for i in range(300,1000,width)]
-            self.tempx = random.choice(l)
-
-            self.tempy = 500
-            Platform(self.tempx, self.tempy, width, PLATFORM_THICKNESS, 'platform', self)
+        # while len(self.platforms) < plat_limit:
+        #     width = 100
+        #     maxdiff = 700
+        #
+        #     l= [(SCREEN_WIDTH + i) for i in range(300,1000,width)]
+        #     self.tempx = random.choice(l)
+        #
+        #     self.tempy = 500
+        #     Platform(self.tempx, self.tempy, width, PLATFORM_THICKNESS, 'platform', self)
 
     def events(self):
         for event in pg.event.get():
@@ -226,17 +229,17 @@ class Game(object):
         if self.typing_text.end_of_passage:
             self.scoreboard.draw()
 
-        draw_text(self.screen,'WPM: ' + str(round(self.wpm)),30, 70,750, WHITE)
-        draw_text(self.screen, 'Timer: ' + str(round(self.timer,1)) + ' s', 30 , 230, 750, WHITE)
-        draw_text(self.screen, f'Calibrated WPM: {round(self.calibrated_wpm)}' , 25, 480, 755, WHITE)
-        draw_text(self.screen, f'Accuracy: {round(self.accuracy, 2)}%', 30, 750, 750, WHITE)
+        draw_text(self.screen,'WPM: ' + str(round(self.wpm)),30, 70,750, BLACK)
+        draw_text(self.screen, 'Timer: ' + str(round(self.timer,1)) + ' s', 30 , 230, 750, BLACK)
+        draw_text(self.screen, f'Calibrated WPM: {round(self.calibrated_wpm)}' , 25, 480, 755, BLACK)
+        draw_text(self.screen, f'Accuracy: {round(self.accuracy, 2)}%', 30, 750, 750, BLACK)
 
         if not self.typing_text.start:
-            draw_text(self.screen, f"Begin typing to start timer, {self.player_name}.", 30, SCREEN_WIDTH//2, 30, WHITE, pos = 'mid')
+            draw_text(self.screen, f"Begin typing to start timer, {self.player_name}.", 30, SCREEN_WIDTH//2, 30, BLACK, pos = 'mid')
 
 
         if not self.typing_text.end_of_passage and self.calibrated and not self.typing_text.start:
-            draw_text(self.screen, f'Learn something new:', 20, 150,self.input_box.rect[1],WHITE)
+            draw_text(self.screen, f'Learn something new:', 20, 150,self.input_box.rect[1],BLACK)
             self.input_box.draw(self.screen)
             self.random_fact_button.draw(self.screen)
 
