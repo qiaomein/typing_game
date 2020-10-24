@@ -217,8 +217,9 @@ class Game(object):
 
 
     def draw(self):
-        # self.screen.blit(bg,(0,0))
-        self.screen.fill(BLACK)
+        self.screen.fill(WHITE)
+        self.screen.blit(bg,(0,0))
+
         self.all_sprites.draw(self.screen)
         # pg.draw.rect(self.screen, WHITE, (paddingx-2,SCREEN_HEIGHT*2//3,SCREEN_WIDTH-2*paddingx + 10,SCREEN_HEIGHT//3-paddingy))
         self.typing_text.draw()

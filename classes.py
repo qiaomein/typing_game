@@ -153,8 +153,8 @@ class Bot(pg.sprite.Sprite):
                 frame.set_colorkey(BLACK)
                 self.walkRight.append(pg.transform.flip(frame, True, False))
         elif self.type == 'cat':
-            self.walkRight = [pg.image.load('data/images/cat/catwalk1.jpg'), pg.image.load('data/images/cat/catwalk2.jpg'),
-                             pg.image.load('data/images/cat/catwalk3.jpg')]
+            self.walkRight = [pg.image.load('data/images/cat/cat1.png'), pg.image.load('data/images/cat/cat2.png'),
+                             pg.image.load('data/images/cat/cat3.png')]
             for frame in self.walkRight:
                 frame.set_colorkey(WHITE)
         elif self.type == 'boy':
@@ -197,6 +197,8 @@ class Bot(pg.sprite.Sprite):
     def update(self):
         self.animate()
         self.rect.midbottom = self.pos
+        if self.type == 'kiwi':
+            self.rect.y = self.pos.y - 90
 
         #motion to wpm
         if self.game.typing_text.start:

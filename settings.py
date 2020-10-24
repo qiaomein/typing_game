@@ -9,7 +9,7 @@ player_name = 'Qiaoster'
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 800
 FPS = 120
-bg = pg.image.load('data/images/bg.png')
+bg = pg.image.load('data/images/bg1.png')
 char = pg.image.load('data/images/idle.png')
 programIcon = pg.image.load('data/images/icon.png')
 

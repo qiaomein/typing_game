@@ -9,10 +9,13 @@ have different skins: red stolen car, bike, kiwi, fart, walking
 
 Things to fix up:
 -import poem
--design some save system
+-design some save system and points system
+-change main sprite to something generic?
+    -selection of sprites like say: pineapple car, ice cream car, hotdog car
 -graphics
-    -varied sprite sheets
+    -varied sprite sheets [DONE]
     -background
+-finish jackster announce and points
 
 
 -calibration type test [DONE]
