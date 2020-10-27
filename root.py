@@ -138,7 +138,7 @@ class Game(object):
             for jackster in self.jacksters:
                 jackster.kill()
 
-            y_datum = self.player.y - self.player.height
+            y_datum = self.player.y+8 - self.player.height
 
             for i in range(NUM_BOTS):
                 Bot(self.player.x, y_datum-i*90, 64, 90, self, color = GRAY)
@@ -277,7 +277,7 @@ class Game(object):
                 self.get_player_name.get_name(event)
 
             self.get_player_name.draw(self.screen)
-            draw_text(self.screen,'Wasgoodies how may I address you?', 50, SCREEN_WIDTH//2, SCREEN_HEIGHT//2 - 100, BLACK, pos = 'mid')
+            draw_text(self.screen,'Enter name:', 50, SCREEN_WIDTH//2, SCREEN_HEIGHT//2 - 100, BLACK, pos = 'mid')
 
             self.get_player_name.update()
             if self.player_name != '' and len(self.player_name)>1:
