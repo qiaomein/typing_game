@@ -242,7 +242,7 @@ class Game(object):
             self.input_box.draw(self.screen)
             self.random_fact_button.draw(self.screen)
 
-        if self.jackster_round and not self.typing_text.start:
+        if self.jackster_round and not self.typing_text.start and not self.typing_text.end_of_passage:
             draw_text(self.screen, f'The Jackster IS HERE!',50, SCREEN_WIDTH//2,SCREEN_HEIGHT//4,BLACK, pos = 'mid')
 
         self.reset_game_button.draw(self.screen)
