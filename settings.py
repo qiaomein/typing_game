@@ -33,7 +33,7 @@ player_jump = -27
 
 wpm_factor = 50
 avg_wpm = 80
-passage_char_limit = 250
+passage_char_limit = 235
 
 PLATFORM_LIST = [(SCREEN_WIDTH // 3, SCREEN_HEIGHT - 220, SCREEN_WIDTH // 3, 40),
                  (SCREEN_WIDTH // 4, SCREEN_HEIGHT - 220 * 2, SCREEN_WIDTH // 3, 30)]

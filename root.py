@@ -59,7 +59,7 @@ class Game(object):
         self.jacksters = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
 
-        self.player = Player(text_rect[0]+32,text_rect[1],64,100,self)
+        self.player = Player(text_rect[0]+32,text_rect[1]-8,64,100,self)
 
 
 
@@ -90,7 +90,6 @@ class Game(object):
         if self.typing_text.end_of_passage:
             self.reset_game_button.resetted = False
 
-
         #timer
 
         # if self.typing_text.start:
@@ -116,7 +115,7 @@ class Game(object):
         elif self.total_char_typed == 0: self.accuracy =0
 
         #moving screen to the right
-        if self.player.rect.right > SCREEN_WIDTH *5// 7:
+        if self.player.rect.right > SCREEN_WIDTH *3// 7:
 
             self.player.pos.x -= abs(self.player.vel.x)
             for bot in self.bots:
@@ -144,7 +143,7 @@ class Game(object):
             for i in range(NUM_BOTS):
                 Bot(self.player.x, y_datum-i*90, 64, 90, self, color = GRAY)
 
-            self.player.pos = vec(text_rect[0] + 32, text_rect[1])
+            self.player.pos = vec(text_rect[0] + 32, text_rect[1]-8)
 
             # self.bot1 = Bot(self.player.x, y_datum, 64, 40, self, color=GRAY)
             # self.bot2 = Bot(self.player.x, y_datum-40, 64, 40, self)
@@ -307,9 +306,6 @@ class Game(object):
 
 
         self.wait_for_click()
-
-
-
 
 
 g = Game()

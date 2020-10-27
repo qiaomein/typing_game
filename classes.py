@@ -52,9 +52,10 @@ class Player(pg.sprite.Sprite):
         self.acc = vec(0,0)
 
         # images
-        self.walkRight = [pg.image.load('data/images/run1.png'), pg.image.load('data/images/run2.png'),
-                          pg.image.load('data/images/run3.png'), pg.image.load('data/images/run4.png'),
-                          pg.image.load('data/images/run5.png'), pg.image.load('data/images/run6.png')]
+        # self.walkRight = [pg.image.load('data/images/run1.png'), pg.image.load('data/images/run2.png'),
+        #                   pg.image.load('data/images/run3.png'), pg.image.load('data/images/run4.png'),
+        #                   pg.image.load('data/images/run5.png'), pg.image.load('data/images/run6.png')]
+        self.walkRight = [pg.image.load('data/images/player1.png'),pg.image.load('data/images/player2.png')]
         for i in self.walkRight:
             i.set_colorkey(BLACK)
         self.walkLeft = []
@@ -82,7 +83,8 @@ class Player(pg.sprite.Sprite):
                 self.rect.bottom = bottom
 
         if not self.jumping and not self.walking:
-            self.image = pg.image.load("data/images/idle.png")
+            # self.image = pg.image.load("data/images/idle.png")
+            self.image = pg.image.load("data/images/player1.png")
             self.rect = self.image.get_rect()
 
         self.mask = pg.mask.from_surface(self.image)
@@ -95,7 +97,7 @@ class Player(pg.sprite.Sprite):
         #relating wpm to player speed
 
         self.acc.x = self.game.wpm/wpm_factor
-        self.acc.x += self.vel.x * player_friction + self.game.typing_text.streak/100
+        self.acc.x += self.vel.x * player_friction + self.game.typing_text.streak/120
         self.vel.x += self.acc.x
 
 
@@ -619,6 +621,7 @@ class Query(object):
                 self.truncate_a()
                 if 'Metacritic' in self.a and 'Rotten Tomatoes' in self.a:
                     self.a = self.a.split('Metacritic ')[1]
+
             print(self.a)
             self.game.typing_text.reset_game()
             self.game.typing_text.passage = self.a
