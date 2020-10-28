@@ -495,6 +495,7 @@ class InputBox:
         self.rect.w = width
 
     def draw(self, screen):
+        pg.draw.rect(screen, WHITE, self.rect)
         # Blit the text.
         screen.blit(self.txt_surface, (self.rect.x+5, self.rect.y+5))
         # Blit the rect.
@@ -561,8 +562,10 @@ class GameButton(object):
 
     def draw(self, screen):
         # Blit the text.
+        pg.draw.rect(screen, WHITE, self.rect)
         screen.blit(self.txt_surface, (self.rect.x+5, self.rect.y+5))
         # Blit the rect.
+
         pg.draw.rect(screen, BLACK, self.rect, 2)
 
 
@@ -599,37 +602,52 @@ class Query(object):
         for summary in self.soup.find_all('div', id = 'main'):
             self.a = summary.text
             self.format_a()
+            print(self.a)
             try:
                 if 'View allView all' not in self.a:
                     print('ran through try1')
                     self.a = self.a.split('View all')[1]
                     self.a = space_caps(self.a).replace('  ', ' ')
-                    self.truncate_a()
+                    # self.truncate_a()
                     if 'Metacritic' in self.a or 'Rotten Tomatoes' in self.a:
+                        self.a = self.a.split('Metacritic ')[1]
+                elif 'ImagesView allView all' in self.a:
+                    print('ran through Images')
+                    self.a = self.a.split('ImagesView allView all')[1]
+                    self.a = space_caps(self.a).replace('  ', ' ')
+                    # self.truncate_a()
+                    if 'Metacritic' in self.a and 'Rotten Tomatoes' in self.a:
                         self.a = self.a.split('Metacritic ')[1]
                 else:
                     print('ran through try2')
                     self.a = self.a.split('resultsVerbatim')[1].split('View allView all')[0]
                     self.a = space_caps(self.a).replace('  ', ' ')
-                    self.truncate_a()
+                    # self.truncate_a()
                     if 'Metacritic' in self.a and 'Rotten Tomatoes' in self.a:
                         self.a = self.a.split('Metacritic ')[1]
+
             except:
                 self.a = self.a.split('resultsVerbatim')[1]
                 self.a = space_caps(self.a).replace('  ', ' ')
                 print('ran through except')
-                self.truncate_a()
+                # self.truncate_a()
                 if 'Metacritic' in self.a and 'Rotten Tomatoes' in self.a:
                     self.a = self.a.split('Metacritic ')[1]
-
+            self.rid_url()
             print(self.a)
             self.game.typing_text.reset_game()
+            self.truncate_a()
             self.game.typing_text.passage = self.a
             self.game.typing_text.passage_clone = self.game.typing_text.passage
+
+    def rid_url(self):
+        if '/ wiki / ' in self.a:
+            self.a = self.a.split(f'/ wiki / ')[1]
 
     def format_a(self):
         self.a = self.a.replace('·', ' ')
         self.a = self.a.replace('|', '/')
+        self.a = self.a.replace('_', ' ')
         self.a = self.a.replace('›', '/')
         self.a = self.a.replace('\n', ' ').replace('\t',' ')
         self.a = self.a.replace("’", "'")

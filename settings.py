@@ -57,7 +57,7 @@ paddingy = 50
 
 text_rect = (paddingx,SCREEN_HEIGHT*2//3,SCREEN_WIDTH-2*paddingx,SCREEN_HEIGHT//3-paddingy) #x,y,width,height
 calibration_text = 'This text is to calibrate your typing speed. It took the brand two years to develop the perfect $4 Popeyes sandwich.'
-# calibration_text = 'Meesi.'
+calibration_text = 'Meesi.'
 
 typing_dict={
     K_q:'q',K_w:'w',K_e:'e',K_r:'r',K_t:'t',K_y:'y',K_u:'u',K_i:'i',K_o:'o',K_p:'p',

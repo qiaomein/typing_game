@@ -8,15 +8,15 @@ have different skins: red stolen car, bike, kiwi, fart, walking
 
 
 Things to fix up:
--import poem
+-import poem [DONE]
 -design some save system and points system
 -change main sprite to something generic?
-    -selection of sprites like say: pineapple car, ice cream car, hotdog car
+    -selection of sprites like say: pineapple car, ice cream car, hotdog car [DONE]
 -graphics
     -varied sprite sheets [DONE]
     -background
 -finish jackster announce and points
-
+-fix webscraping and format if / wiki / [query] out
 
 -calibration type test [DONE]
 -importing passages from the internet [DONE]
@@ -26,6 +26,7 @@ Things to fix up:
 -gamemodes/title screen?
 -end screen and reset [DONE]
 -results screen [DONE]
+
 
 -add reset game button [DONE]
 

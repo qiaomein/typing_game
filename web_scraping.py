@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
+
 from settings import *
 
 #get website
@@ -56,6 +57,9 @@ for summary in soup.find_all('div',id = 'main'):
             if 'Metacritic' in a and 'Rotten Tomatoes' in a:
                 a = a.split('Metacritic')[1]
             print(a)
+
+        if a == 'Images':
+            a = 3/0
 
     except:
         a = summary.text

@@ -39,6 +39,8 @@ class Game(object):
         self.new_round = True
         self.jackster_round = False
         self.running = True
+        self.bgX = 0
+        self.bgX2 = SCREEN_WIDTH
 
     def new(self):
         #input box
@@ -175,6 +177,14 @@ class Game(object):
         #     self.tempy = 500
         #     Platform(self.tempx, self.tempy, width, PLATFORM_THICKNESS, 'platform', self)
 
+    #scrolling background
+        self.bgX -= int(self.player.vel.x*1.5)
+        self.bgX2 -= int(self.player.vel.x*1.5)
+        if self.bgX < -1*SCREEN_WIDTH:
+            self.bgX = 0
+        if self.bgX2 < 0:
+            self.bgX2 = SCREEN_WIDTH
+
     def events(self):
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -220,7 +230,8 @@ class Game(object):
 
     def draw(self):
         self.screen.fill(WHITE)
-        self.screen.blit(bg,(0,0))
+        self.screen.blit(bg,(self.bgX,0))
+        self.screen.blit(bg,(self.bgX2,0))
 
         self.all_sprites.draw(self.screen)
         # pg.draw.rect(self.screen, WHITE, (paddingx-2,SCREEN_HEIGHT*2//3,SCREEN_WIDTH-2*paddingx + 10,SCREEN_HEIGHT//3-paddingy))
@@ -238,12 +249,12 @@ class Game(object):
 
 
         if not self.typing_text.end_of_passage and self.calibrated and not self.typing_text.start:
-            draw_text(self.screen, f'Learn something new:', 20, 150,self.input_box.rect[1],BLACK)
+            draw_text(self.screen, f'Look up something:', 20, 200,self.input_box.rect[1],BLACK)
             self.input_box.draw(self.screen)
             self.random_fact_button.draw(self.screen)
 
         if self.jackster_round and not self.typing_text.start and not self.typing_text.end_of_passage:
-            draw_text(self.screen, f'The Jackster IS HERE!',50, SCREEN_WIDTH//2,SCREEN_HEIGHT//4,BLACK, pos = 'mid')
+            draw_text(self.screen, f'The Jackster IS HERE!',50, SCREEN_WIDTH//2,SCREEN_HEIGHT//4+180,RED, pos = 'mid')
 
         self.reset_game_button.draw(self.screen)
 
