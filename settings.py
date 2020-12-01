@@ -1,5 +1,8 @@
 import pygame as pg
 from pygame.constants import *
+import string
+import os
+
 
 url='https://www.google.com/search?q='
 url2= 'https://www.cs.cmu.edu/~bingbin/'
@@ -9,25 +12,26 @@ player_name = 'Qiaoster'
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 800
 FPS = 120
-bg = pg.image.load('data/images/bg1.png')
-char = pg.image.load('data/images/idle.png')
-programIcon = pg.image.load('data/images/icon.png')
+bg = pg.image.load(os.path.join('data','images','bg1.png'))
+char = pg.image.load(os.path.join('data','images','idle.png'))
+programIcon = pg.image.load(os.path.join('data','images','icon.png'))
 
 all_fonts = pg.font.get_fonts()
 #font_name = all_fonts[0]
-font_name = 'data/fonts/Georgia.ttf'
+font_name = os.path.join('data','fonts','Georgia.ttf')
 
 PLATFORM_LAYER = 0
 PLAYER_LAYER = 1
 BOT_LAYER = 1
 
-NUM_BOTS = 3
-JACKSTER_CHANCE = 20
+CHAR_LIST = list(string.printable)
 
-winning_score = 40
+NUM_BOTS = 3
+JACKSTER_CHANCE = 8
+
 
 player_acc = 2 #d wpm/dt
-player_friction = -1
+player_friction = -.9
 player_grav = 1.0
 player_jump = -27
 
@@ -57,7 +61,7 @@ paddingy = 50
 
 text_rect = (paddingx,SCREEN_HEIGHT*2//3,SCREEN_WIDTH-2*paddingx,SCREEN_HEIGHT//3-paddingy) #x,y,width,height
 calibration_text = 'This text is to calibrate your typing speed. It took the brand two years to develop the perfect $4 Popeyes sandwich.'
-calibration_text = 'Meesi.'
+# calibration_text = 'Meesi.'
 
 typing_dict={
     K_q:'q',K_w:'w',K_e:'e',K_r:'r',K_t:'t',K_y:'y',K_u:'u',K_i:'i',K_o:'o',K_p:'p',

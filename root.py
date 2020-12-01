@@ -6,7 +6,7 @@ import time
 class Game(object):
     def __init__(self):
         pg.init()
-        pg.display.set_caption('Not a Typing Test')
+        pg.display.set_caption('No Nitros Needed')
 
         pg.display.set_icon(programIcon)
         self.clock = pg.time.Clock()
@@ -99,6 +99,7 @@ class Game(object):
         if self.typing_text.start:
             self.timer = time.time() - self.base_time
 
+
         ####### calculating wpm (words/ms * 1000/60)
 
         # noninstantaneous implementation
@@ -109,7 +110,7 @@ class Game(object):
         """
 
         #instantaneous wpm calculator
-        if self.timer > 0.1: self.wpm = (self.char_typed/5)/(self.timer/60)
+        if self.timer > 0: self.wpm = (self.char_typed/5)/(self.timer/60)
         else: self.wpm = 0
 
         #instantaneous accuracy calculator

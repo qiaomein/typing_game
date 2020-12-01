@@ -39,7 +39,7 @@ class Player(pg.sprite.Sprite):
         self.jumping = False
 
 
-        self.image = get_image(pg.image.load("data/images/idle.png"), self.width, self.height)
+        self.image = get_image(pg.image.load(os.path.join('data','images','idle.png')), self.width, self.height)
         self.image.set_colorkey(BLACK)
         self.current_frame = 0
 
@@ -55,7 +55,7 @@ class Player(pg.sprite.Sprite):
         # self.walkRight = [pg.image.load('data/images/run1.png'), pg.image.load('data/images/run2.png'),
         #                   pg.image.load('data/images/run3.png'), pg.image.load('data/images/run4.png'),
         #                   pg.image.load('data/images/run5.png'), pg.image.load('data/images/run6.png')]
-        self.walkRight = [pg.image.load('data/images/player1.png'),pg.image.load('data/images/player2.png')]
+        self.walkRight = [pg.image.load(os.path.join('data','images','player1.png')),pg.image.load(os.path.join('data','images','player2.png'))]
         for i in self.walkRight:
             i.set_colorkey(BLACK)
         self.walkLeft = []
@@ -84,7 +84,7 @@ class Player(pg.sprite.Sprite):
 
         if not self.jumping and not self.walking:
             # self.image = pg.image.load("data/images/idle.png")
-            self.image = pg.image.load("data/images/player1.png")
+            self.image = pg.image.load(os.path.join('data','images','player1.png'))
             self.rect = self.image.get_rect()
 
         self.mask = pg.mask.from_surface(self.image)
@@ -96,8 +96,12 @@ class Player(pg.sprite.Sprite):
 
         #relating wpm to player speed
 
+        if self.game.timer >0: curr_wpm = (self.game.char_typed/5)/(self.game.timer/60)
+        else: curr_wpm = 0
+
+
         self.acc.x = self.game.wpm/wpm_factor
-        self.acc.x += self.vel.x * player_friction + self.game.typing_text.streak/120
+        self.acc.x += self.vel.x * player_friction + self.game.typing_text.streak/100
         self.vel.x += self.acc.x
 
 
@@ -148,25 +152,25 @@ class Bot(pg.sprite.Sprite):
         #graphics
         self.walkRight = []
         if self.type == 'kiwi':
-            self.walkLeft = [pg.image.load('data/images/kiwil1.png'), pg.image.load('data/images/kiwil2.png'),
-                          pg.image.load('data/images/kiwil3.png'), pg.image.load('data/images/kiwil4.png'),
-                          pg.image.load('data/images/kiwil5.png')]
+            self.walkLeft = [pg.image.load(os.path.join('data','images','kiwil1.png')), pg.image.load(os.path.join('data','images','kiwil2.png')),
+                          pg.image.load(os.path.join('data','images','kiwil3.png')), pg.image.load(os.path.join('data','images','kiwil4.png')),
+                          pg.image.load(os.path.join('data','images','kiwil5.png'))]
             for frame in self.walkLeft:
                 frame.set_colorkey(BLACK)
                 self.walkRight.append(pg.transform.flip(frame, True, False))
         elif self.type == 'cat':
-            self.walkRight = [pg.image.load('data/images/cat/cat1.png'), pg.image.load('data/images/cat/cat2.png'),
-                             pg.image.load('data/images/cat/cat3.png')]
+            self.walkRight = [pg.image.load(os.path.join('data','images','cat1.png')), pg.image.load(os.path.join('data','images','cat2.png')),
+                             pg.image.load(os.path.join('data','images','cat3.png'))]
             for frame in self.walkRight:
                 frame.set_colorkey(WHITE)
         elif self.type == 'boy':
-            self.walkRight = [pg.image.load('data/images/boy2.PNG'),
-                             pg.image.load('data/images/boy1.PNG')]
+            self.walkRight = [pg.image.load(os.path.join('data','images','boy2.png')),
+                             pg.image.load(os.path.join('data','images','boy1.png'))]
             for frame in self.walkRight:
                 frame.set_colorkey(WHITE)
         elif self.type == 'yoda':
-            self.walkRight = [pg.image.load('data/images/yoda2.PNG'),
-                             pg.image.load('data/images/yoda1.PNG')]
+            self.walkRight = [pg.image.load(os.path.join('data','images','yoda2.png')),
+                             pg.image.load(os.path.join('data','images','yoda1.png'))]
             for frame in self.walkRight:
                 frame.set_colorkey(WHITE)
 
@@ -240,8 +244,8 @@ class Jackster(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
-        self.walkRight = [pg.image.load('data/images/tile001.png'),pg.image.load('data/images/tile002.png'),pg.image.load('data/images/tile003.png'),
-                          pg.image.load('data/images/tile004.png'),pg.image.load('data/images/tile005.png'),pg.image.load('data/images/tile000.png'),]
+        self.walkRight = [pg.image.load(os.path.join('data','images','tile001.png')),pg.image.load(os.path.join('data','images','tile002.png')),pg.image.load(os.path.join('data','images','tile003.png')),
+                          pg.image.load(os.path.join('data','images','tile004.png')),pg.image.load(os.path.join('data','images','tile005.png')),pg.image.load(os.path.join('data','images','tile006.png')),]
 
         self.pos = vec(self.x, self.y)
         self.vel = vec(0, 0)
@@ -308,7 +312,7 @@ class Platform(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self, self.groups)
         self.width = width
         self.height = height
-        self.image = get_image(pg.image.load('data/images/platform.png'),self.width,self.height)
+        self.image = get_image(pg.image.load(os.path.join('data','images','platform.png')),self.width,self.height)
         self.image.set_colorkey(BLACK)
 
 
@@ -344,7 +348,7 @@ class TypingText(object):
         self.wrong_letter_flag = False
 
     def load_passage(self): #sets self.passage to passage
-        with open('data/preloads.txt', 'r') as f:
+        with open(os.path.join('data','preloads.txt'), 'r') as f:
             contents = f.read()
         self.passage = random.choice(contents.split('\n\n'))
         # self.passage = 'test passage'
@@ -634,6 +638,7 @@ class Query(object):
                 if 'Metacritic' in self.a and 'Rotten Tomatoes' in self.a:
                     self.a = self.a.split('Metacritic ')[1]
             self.rid_url()
+            self.rid_untypeable_char()
             print(self.a)
             self.game.typing_text.reset_game()
             self.truncate_a()
@@ -643,6 +648,13 @@ class Query(object):
     def rid_url(self):
         if '/ wiki / ' in self.a:
             self.a = self.a.split(f'/ wiki / ')[1]
+    def rid_untypeable_char(self):
+        l = list(self.a)
+        for i in range(len(self.a)):
+            if self.a[i] not in CHAR_LIST:
+                l.pop(i)
+        self.a = ''.join(l)
+
 
     def format_a(self):
         self.a = self.a.replace('·', ' ')
@@ -722,3 +734,16 @@ class Scoreboard(object):
             places.append(name)
         self.places = places
         print(self.places)
+
+class SaveSystem(object):
+    """
+    1. write save file after name given
+
+    2. after each round save stats
+
+    Protocol: player: {player.name}; wpm: {player.wpm}; time: {player.time}; accuracy: {player.accuracy};
+    """
+    def write_savefile(self,game):
+        with open(f'{game.player_name}', 'w') as createfile:
+            createfile.write(f'player: {game.player_name}; wpm: {game.wpm}; calibrated wpm: {game.calibrated_wpm}; time: {game.timer}; score: {game.score}')
+
